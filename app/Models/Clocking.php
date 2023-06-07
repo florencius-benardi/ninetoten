@@ -18,6 +18,12 @@ class Clocking extends Model
     const ATTR_CHAR_NAME = 'Alias';
     const ATTR_INT_LOCATION = 'DeptID';
     const ATTR_INT_COMPANY = 'company_id';
+    const ATTR_INT_CLOCKING_TYPE = 'checktype';
+
+    const ATTR_RELATION_LOCATION = 'location';
+    const ATTR_RELATION_COMPANY = 'company';
+    const ATTR_RELATION_DEVICE = 'device';
+    const ATTR_RELATION_EMPLOYEE = 'employee';
 
     /**
      * The table associated with the model.
@@ -78,6 +84,15 @@ class Clocking extends Model
         return $this->belongsTo(DeviceClocking::class, self::ATTR_CHAR_DEVICE)->select(
             DeviceClocking::ATTR_INT_ID,
             DeviceClocking::ATTR_CHAR_NAME
+        );
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, self::ATTR_INT_EMPLOYEE)->select(
+            Employee::ATTR_INT_ID,
+            Employee::ATTR_CHAR_NAME,
+            Employee::ATTR_CHAR_CODE,
         );
     }
 }
