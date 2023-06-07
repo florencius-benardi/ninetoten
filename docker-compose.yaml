@@ -1,0 +1,43 @@
+version: '1'
+name: 'clocking'
+volumes:
+  backendvolume:
+    name: backend-modules
+services:
+  nginx:
+    image: 'nginx:stable'
+    ports:
+      - '8000:80'
+    volumes:
+      - ./src:/var/www/clocking
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/clocking.conf:ro
+    depends_on:
+      - php
+      - mysql
+  php:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.Dockerfile
+    volumes:
+      - ./src:/var/www/clocking:delegated
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    env_file:
+      - ./environment/mysql.env
+    ports:
+      - 3306:3306
+    restart: always
+  composer:
+    build:
+      context: ./dockerfiles
+      dockerfile: composer.Dockerfile
+    volumes:
+      - ./src:/var/www/clocking
+  artisan:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.Dockerfile
+    volumes:
+      - ./src:/var/www/clocking
+    entrypoint: ['php', '/var/www/clocking/artisan']
